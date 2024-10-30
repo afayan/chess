@@ -1,0 +1,25 @@
+.black {
+  background-color: black;
+  color: white;
+}
+
+.white {
+  background-color: rgb(219, 156, 156);
+  color: black;
+}
+
+#highlightedBox{
+    background-color: lightgreen;
+}
+
+.boardContainer {
+    cursor: pointer;
+  margin-left: 50%;
+  transform: translateX(-50%);
+  display: grid;
+  grid-template-columns: 80px 80px 80px 80px 80px 80px 80px 80px;
+}
+
+.block {
+  height: 80px;
+}
