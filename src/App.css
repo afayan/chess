@@ -1,15 +1,23 @@
 .black {
-  background-color: black;
-  color: white;
+  background-color: rgb(99, 57, 57);
+
 }
 
 .white {
   background-color: rgb(216, 139, 91);
-  color: black;
+  
+}
+
+.redbox{
+  background-color: rgb(218, 103, 103)
 }
 
 .highlightedBox{
-    background-color: lightgreen;
+    background-color: rgb(60, 146, 60);
+}
+
+svg{
+  margin: 23px;
 }
 
 #whitepiece{
