@@ -1,4 +1,5 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useLayoutEffect, useState } from "react";
+import { FaChessBishop } from "react-icons/fa";
 
 function Chess() {
   const initialBoard = [
@@ -52,6 +53,10 @@ function Chess() {
 
   //   const players = ["rook1", "rook2", "king0", "queen0", "knight1", "knight2", "bishop1", "bishop2", 'pawn1', "pawn2", "pawn3", "pawn4", "pawn5", "pawn6", "pawn7", "pawn8"]
 
+  const pieceRenderings = {
+    bbsihop: <FaChessBishop />,
+  };
+
   //   const player1 = []
   //   const player2 = []
 
@@ -62,6 +67,10 @@ function Chess() {
 
   const [boxSelected, setBoxSelected] = useState([]);
   const [validBoxes, setValidBoxes] = useState([]);
+  const [whitePlayerTurn, setWhitePlayerTurn] = useState(true);
+  const [me, setMe] = useState("white");
+  const [reacheble, setReachable] = useState([]);
+  const [redBox, setRedbox] = useState([]);
 
   //   console.log(player1);
   //   console.log(player2)
@@ -73,9 +82,17 @@ function Chess() {
   //check if clicked box is valid
   //shift current piece to new block
 
+  function endTurn() {
+    setBoxSelected([]);
+    setValidBoxes([]);
+    setReachable([]);
+  }
+
   function checkvalidity([row, col], piece) {
     //this should calculate all the possible spots
     let piecename = piece.slice(1, piece.length - 1);
+
+    setReachable([]);
 
     switch (piecename) {
       case "rook":
@@ -86,6 +103,7 @@ function Chess() {
           vbd.push(String(row) + String(index), String(index) + String(col));
         }
         setValidBoxes(vbd);
+        checkReach(row, col);
 
         console.log("validboxes is ", validBoxes);
         break;
@@ -100,7 +118,8 @@ function Chess() {
           vbd.push(String(row + index) + String(col - index));
           vbd.push(String(row - index) + String(col + index));
         }
-
+        setValidBoxes(vbd);
+        checkReach(row, col);
         break;
 
       case "queen":
@@ -113,6 +132,8 @@ function Chess() {
           vbd.push(String(row) + String(index), String(index) + String(col));
         }
 
+        setValidBoxes(vbd);
+        checkReach(row, col);
         break;
 
       case "knight":
@@ -133,7 +154,41 @@ function Chess() {
             }
           }
         }
+        setValidBoxes(vbd);
+        setReachable(vbd);
+        break;
 
+      case "king":
+        var vbd = validBoxes;
+
+        vbd.push(String(row + 1) + String(col));
+        vbd.push(String(row) + String(col + 1));
+        vbd.push(String(row) + String(col - 1));
+        vbd.push(String(row - 1) + String(col));
+        //diags
+        vbd.push(String(row + 1) + String(col + 1));
+        vbd.push(String(row - 1) + String(col - 1));
+        vbd.push(String(row + 1) + String(col - 1));
+        vbd.push(String(row - 1) + String(col + 1));
+        break;
+
+      case "pawn":
+        var vbd = validBoxes;
+
+        if (whitePlayerTurn) {
+          //white pawn moves
+
+          vbd.push(String(row - 1) + String(col));
+
+          // if (board[row - 1][col - 1]) {
+
+          // }
+        } else {
+          vbd.push(String(row + 1) + String(col));
+        }
+
+        setValidBoxes(vbd);
+        checkReach(row, col);
         break;
 
       default:
@@ -144,7 +199,127 @@ function Chess() {
 
     //check if reacheble or not also
 
-    console.log(piecename);
+    function checkReach(row, col) {
+      //row, col is current position
+      console.log("valid boxes in function is ", validBoxes);
+      const arr = [...reacheble];
+
+      let r = row + 1;
+      let c = col + 1;
+
+      while (r >= 0 && c >= 0 && r < 8 && c < 8 && board[r][c] != 0) {
+        if (validBoxes.includes(String(r) + String(c))) {
+          arr.push(String(r) + String(c));
+         
+        }
+
+        
+
+        r++;
+        c++;
+      }
+
+      // r, c = row - 1, col - 1
+      r = row - 1;
+      c = col - 1;
+
+      while (r >= 0 && c >= 0 && r < 8 && c < 8 && !board[r][c]) {
+        if (validBoxes.includes(String(r) + String(c))) {
+          // setReachable((reach) => [...reach, String(r) + String(c)]);
+          arr.push(String(r) + String(c));
+        
+        }
+
+        
+
+        r--;
+        c--;
+      }
+
+      // r, c = row + 1, col - 1
+
+      r = row + 1;
+      c = col - 1;
+      while (r >= 0 && c >= 0 && r < 8 && c < 8 && !board[r][c]) {
+        if (validBoxes.includes(String(r) + String(c))) {
+          arr.push(String(r) + String(c));
+       
+
+        }
+
+        
+        r++;
+        c--;
+      }
+
+      // r, c = row - 1, col + 1
+
+      r = row - 1;
+      c = col + 1;
+
+      while (r >= 0 && c >= 0 && r < 8 && c < 8 && !board[r][c]) {
+        if (validBoxes.includes(String(r) + String(c))) {
+          arr.push(String(r) + String(c));
+        }
+
+        r--;
+        c++;
+      }
+
+      r = row + 1;
+      c = col;
+      while (r >= 0 && c >= 0 && r < 8 && c < 8 && !board[r][c]) {
+        if (validBoxes.includes(String(r) + String(c))) {
+          // setReachable((reach) => [...reach, String(r) + String(c)]);
+          arr.push(String(r) + String(c));
+        }
+
+        console.log("r c");
+
+        r++;
+      }
+
+      r = row - 1;
+      c = col;
+      while (r >= 0 && c >= 0 && r < 8 && c < 8 && !board[r][c]) {
+        if (validBoxes.includes(String(r) + String(c))) {
+          // setReachable((reach) => [...reach, String(r) + String(c)]);
+          arr.push(String(r) + String(c));
+        }
+
+        r--;
+      }
+
+      r = row;
+      c = col - 1;
+
+      while (r >= 0 && c >= 0 && r < 8 && c < 8 && !board[r][c]) {
+        if (validBoxes.includes(String(r) + String(c))) {
+          // setReachable((reach) => [...reach, String(r) + String(c)]);
+          arr.push(String(r) + String(c));
+        }
+
+        c--;
+      }
+
+      r = row;
+      c = col + 1;
+
+      while (r >= 0 && c >= 0 && r < 8 && c < 8 && !board[r][c]) {
+        if (validBoxes.includes(String(r) + String(c))) {
+          // setReachable((reach) => [...reach, String(r) + String(c)]);
+          arr.push(String(r) + String(c));
+        }
+
+        c++;
+      }
+
+      console.log("arr is ", arr);
+
+      // console.log("reachable ", reacheble);
+      setReachable([...arr]);
+    }
+    // console.log(piecename);
   }
 
   function handleBoxClick(row, col) {
@@ -152,6 +327,16 @@ function Chess() {
 
     if (boxSelected.length === 0) {
       //something is to be selected
+
+      if (
+        !(
+          (board[row][col][0] === "w" && whitePlayerTurn) ||
+          (board[row][col][0] === "b" && !whitePlayerTurn)
+        )
+      ) {
+        alert("not your turn");
+        return;
+      }
 
       if (!board[row][col]) {
         //nothing to select
@@ -175,7 +360,7 @@ function Chess() {
       if (board[row][col]) {
         //sommething is there
 
-        // let suspect = board[row][col]
+        let suspect = board[row][col];
 
         // if (suspect[0] === 'w') {
         //     alert('Your own piece')
@@ -187,17 +372,62 @@ function Chess() {
         //     newboard[row][col] = piece
         // }
 
-        alert("something is there");
-        setBoxSelected([]);
-        setValidBoxes([]);
+        if (
+          (whitePlayerTurn && suspect[0] == "w") ||
+          (!whitePlayerTurn && suspect[0] == "b")
+        ) {
+          alert("something is there");
+          endTurn();
+          return;
+        }
+
+        //kill
+        alert(newboard[row][col] + " killed");
+        newboard[row][col] = piece;
+
+        newboard[boxSelected[0]][boxSelected[1]] = 0;
+        setBoard(newboard);
+        played();
+        endTurn();
         return;
       }
 
+      if (!validBoxes.includes(String(row) + String(col))) {
+        alert("invalid box");
+
+        endTurn();
+        return;
+      }
+
+      //simply move
       newboard[row][col] = piece;
       newboard[boxSelected[0]][boxSelected[1]] = 0;
       console.log([row, col], "placed");
-      setBoxSelected([]);
-      setValidBoxes([]);
+
+      endTurn();
+      played();
+    }
+  }
+
+  function played() {
+    setWhitePlayerTurn((c) => !c);
+  }
+
+  console.log("reachable is ", reacheble);
+
+  function renderPieces(piece) {
+    // console.log("piece is" ,typeof(piece));
+
+    piece = String(piece);
+
+    switch (piece.slice(1, piece.length - 1)) {
+      case "bishop":
+        return <FaChessBishop />;
+        break;
+
+      default:
+        return <>{piece}</>;
+        break;
     }
   }
 
@@ -215,24 +445,31 @@ function Chess() {
     <>
       <div>Chess</div>
 
+      <h2 className="playerlabel">
+        {whitePlayerTurn ? "White" : "Black"}'s turn
+      </h2>
+      <h6 className="playerlabel">I am {me}</h6>
+
       <div className="boardContainer">
         {board.map((row, rowid) => {
           return row.map((col, colid) => {
             return (
               <div
                 key={colid}
-                className={`block ${(rowid + colid) % 2 ? "white" : "black"}`}
-                id={
-                  validBoxes.includes(String(rowid) + String(colid))
+                className={`block ${(rowid + colid) % 2 ? "white" : "black"} ${
+                  reacheble.includes(String(rowid) + String(colid))
                     ? "highlightedBox"
                     : "not"
-                }
+                }`}
+                // id={
+                //   board[rowid][colid] === 'w' ? "whitepiece" : "blackpiece"
+                // }
                 onClick={() => {
                   handleBoxClick(rowid, colid);
                 }}
               >
                 {"R" + String(rowid) + " " + "C" + String(colid)}
-                <p>{board[rowid][colid]} </p>
+                <p>{renderPieces(board[rowid][colid])} </p>
               </div>
             );
           });

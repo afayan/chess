@@ -4,12 +4,20 @@
 }
 
 .white {
-  background-color: rgb(219, 156, 156);
+  background-color: rgb(216, 139, 91);
   color: black;
 }
 
-#highlightedBox{
+.highlightedBox{
     background-color: lightgreen;
+}
+
+#whitepiece{
+  color: white;
+}
+
+#blackpiece{
+  color: black;
 }
 
 .boardContainer {
@@ -18,8 +26,18 @@
   transform: translateX(-50%);
   display: grid;
   grid-template-columns: 80px 80px 80px 80px 80px 80px 80px 80px;
+  /* rotate: 180deg; */
+  background-color: aqua;
+  width: max-content;
+  /* margin: 0px;
+  padding: 0px; */
 }
 
 .block {
   height: 80px;
+}
+
+.playerlabel{
+  position: absolute;
+  font-size: 3em;
 }
