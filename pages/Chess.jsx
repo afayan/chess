@@ -481,7 +481,7 @@ function Chess() {
       //place in old position
 
       if (!reacheble.includes(String(row) + String(col))) {
-        alert("Unreachable box");
+        // alert("Unreachable box");
         endTurn();
         return;
       }
@@ -505,13 +505,13 @@ function Chess() {
           (whitePlayerTurn && suspect[0] == "w") ||
           (!whitePlayerTurn && suspect[0] == "b")
         ) {
-          alert("something is there");
+          // alert("something is there");
           endTurn();
           return;
         }
 
         //kill
-        alert(newboard[row][col] + " killed");
+        // alert(newboard[row][col] + " killed");
         newboard[row][col] = piece;
 
         newboard[boxSelected[0]][boxSelected[1]] = 0;
@@ -540,6 +540,31 @@ function Chess() {
 
   function played() {
     setWhitePlayerTurn((c) => !c);
+
+    //check winner
+    let wking = false
+    let bking = false
+
+    board.forEach((row)=>{
+      if (row.includes('wking0')) {
+        wking = true
+      }
+
+      if (row.includes("bking0")) {
+        bking = true
+      }
+    })
+
+
+    if(!bking){
+      alert("WHITE WON")
+      setBoard(initialBoard)
+    }
+
+    if (!wking) {
+      alert("BLACK WON")
+      setBoard(initialBoard)
+    }
   }
 
   console.log("reachable is ", reacheble);
